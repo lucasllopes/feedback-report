@@ -4,10 +4,10 @@ public class DetailsFeedbackDTO {
     private String courseName;
     private String teacherName;
     private Double averageRating;
-    private Integer countTotalRates;
-    private Integer countTotalBadRates;
+    private Long countTotalRates;
+    private Long countTotalBadRates;
 
-    public DetailsFeedbackDTO(String courseName, String teacherName, Double averageRating, Integer countTotalRates, Integer countTotalBadRates) {
+    public DetailsFeedbackDTO(String courseName, String teacherName, Double averageRating, Long countTotalRates, Long countTotalBadRates) {
         this.courseName = courseName;
         this.teacherName = teacherName;
         this.averageRating = averageRating;
@@ -39,19 +39,19 @@ public class DetailsFeedbackDTO {
         this.averageRating = averageRating;
     }
 
-    public Integer getCountTotalRates() {
+    public Long getCountTotalRates() {
         return countTotalRates;
     }
 
-    public void setCountTotalRates(Integer countTotalRates) {
+    public void setCountTotalRates(Long countTotalRates) {
         this.countTotalRates = countTotalRates;
     }
 
-    public Integer getCountTotalBadRates() {
+    public Long getCountTotalBadRates() {
         return countTotalBadRates;
     }
 
-    public void setCountTotalBadRates(Integer countTotalBadRates) {
+    public void setCountTotalBadRates(Long countTotalBadRates) {
         this.countTotalBadRates = countTotalBadRates;
     }
 }
