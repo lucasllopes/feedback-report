@@ -79,7 +79,7 @@ public class FeedbackReportRepository {
         List<DetailsFeedbackDTO> result = new ArrayList<>();
 
         for (List<Field> row : resp.records()) {
-            String courseName = row.get(0).isNull() ? null : row.get(0).stringValue();
+            String courseName = row.get(0).stringValue();
             String teacherName = row.get(1).stringValue();
             Double averageRating = Double.parseDouble(row.get(2).stringValue());
             Integer countTotalRates = Integer.parseInt(row.get(3).stringValue());
