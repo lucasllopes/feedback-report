@@ -26,6 +26,7 @@ import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Properties;
 
@@ -61,7 +62,7 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
             MimeBodyPart attachmentPart = new MimeBodyPart();
             DataSource source = new ByteArrayDataSource(pdfBytes, "application/pdf");
             attachmentPart.setDataHandler(new DataHandler(source));
-            attachmentPart.setFileName("relatorio_feedbacks.pdf");
+            attachmentPart.setFileName("relatorio_feedbacks_" + LocalDateTime.now() + ".pdf" );
             multipart.addBodyPart(attachmentPart);
 
             message.setContent(multipart);
@@ -112,11 +113,11 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         List<FeedbackDTO> data = repository.listLastFeedbacks(context);
 
         data.forEach(f -> {
-            addColoredCell(table, f.getDescription(), Color.WHITE, false);
+            addColoredCell(table, f.getDescription(), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
             addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
-            addColoredCell(table, f.getStudentName(),Color.WHITE, false);
-            addColoredCell(table, f.getTeacherName(),Color.WHITE, false);
-            addColoredCell(table, f.getCourseName(),Color.WHITE, false);
+            addColoredCell(table, f.getStudentName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, f.getTeacherName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, f.getCourseName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
         });
 
         document.add(table);
