@@ -65,7 +65,9 @@ public class FeedbackReportRepository {
     }
 
 
-    public List<DetailsFeedbackDTO> listDetailsFeedbacks() {
+    public List<DetailsFeedbackDTO> listDetailsFeedbacks(Context context) {
+
+        LambdaLogger log = context.getLogger();
 
         String sql = "SELECT c.name, t.name, AVG(f.rating) AS AVERAGE,COUNT(f.id) AS TOTAL_RATE, SUM(CASE WHEN f.rating <= 5 THEN 1 ELSE 0 END) AS TOTAL_BAD_RATES " +
                 "FROM course c " +
@@ -76,6 +78,10 @@ public class FeedbackReportRepository {
 
 
         ExecuteStatementResponse resp = executeStatement(sql);
+
+        log.log("INFO: Dados: " + resp.toString());
+        log.log("INFO: Feedbacks recuperados: " + resp.records().size() + "\n");
+
         List<DetailsFeedbackDTO> result = new ArrayList<>();
 
         for (List<Field> row : resp.records()) {

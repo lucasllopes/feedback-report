@@ -1,5 +1,6 @@
 package br.com.fiap.lambda;
 
+import br.com.fiap.lambda.dto.DetailsFeedbackDTO;
 import br.com.fiap.lambda.dto.FeedbackDTO;
 import br.com.fiap.lambda.repository.FeedbackReportRepository;
 import com.amazonaws.services.lambda.runtime.Context;
@@ -105,7 +106,7 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         table.setWidthPercentage(100);
 
         addColoredCell(table, "Comentário", Color.WHITE, true);
-        addColoredCell(table, "Nota", Color.WHITE, true);
+        addColoredCell(table, "Avaliação", Color.WHITE, true);
         addColoredCell(table, "Nome do Aluno", Color.WHITE, true);
         addColoredCell(table, "Nome do Professor", Color.WHITE, true);
         addColoredCell(table, "Nome do Curso", Color.WHITE, true);
@@ -113,14 +114,37 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         List<FeedbackDTO> data = repository.listLastFeedbacks(context);
 
         data.forEach(f -> {
-            addColoredCell(table, f.getDescription(), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, f.getDescription(), Color.WHITE, false);
             addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
-            addColoredCell(table, f.getStudentName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
-            addColoredCell(table, f.getTeacherName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
-            addColoredCell(table, f.getCourseName(),f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, f.getStudentName(),Color.WHITE, false);
+            addColoredCell(table, f.getTeacherName(),Color.WHITE, false);
+            addColoredCell(table, f.getCourseName(),Color.WHITE, false);
         });
 
         document.add(table);
+
+        document.newPage();
+
+        PdfPTable tableDetails = new PdfPTable(5);
+        tableDetails.setWidthPercentage(100);
+
+        addColoredCell(tableDetails, "Curso", Color.LIGHT_GRAY, true);
+        addColoredCell(tableDetails, "Nome do Professor", Color.LIGHT_GRAY, true);
+        addColoredCell(tableDetails, "Média das Avaliações", Color.LIGHT_GRAY, true);
+        addColoredCell(tableDetails, "Total de Avaliações", Color.LIGHT_GRAY, true);
+        addColoredCell(tableDetails, "Total de Avaliações(Ruins)", Color.LIGHT_GRAY, true);
+
+        List<DetailsFeedbackDTO> dataDetails = repository.listDetailsFeedbacks(context);
+
+        dataDetails.forEach(f -> {
+            addColoredCell(tableDetails, f.getCourseName(), Color.LIGHT_GRAY, false);
+            addColoredCell(tableDetails, f.getTeacherName(), Color.LIGHT_GRAY, false);
+            addColoredCell(tableDetails, String.valueOf(f.getAverageRating()),Color.LIGHT_GRAY, false);
+            addColoredCell(tableDetails, String.valueOf(f.getCountTotalRates()),Color.LIGHT_GRAY, false);
+            addColoredCell(tableDetails, String.valueOf(f.getCountTotalBadRates()),Color.LIGHT_GRAY, false);
+        });
+
+        document.add(tableDetails);
         document.close();
 
         return out.toByteArray();
