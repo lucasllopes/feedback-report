@@ -3,6 +3,7 @@ package br.com.fiap.lambda;
 import br.com.fiap.lambda.dto.FeedbackDTO;
 import br.com.fiap.lambda.repository.FeedbackReportRepository;
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
@@ -23,14 +24,12 @@ import software.amazon.awssdk.services.ses.model.RawMessage;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 
 import jakarta.inject.Inject;
-import jakarta.inject.Named;
 
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Properties;
 
-@Named("greeting")
-public class GreetingLambda implements RequestHandler<FeedbackRequest, String> {
+public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
 
     @Inject
     SesClient sesClient;
@@ -45,7 +44,7 @@ public class GreetingLambda implements RequestHandler<FeedbackRequest, String> {
 
         try {
             // 1. Gerar o PDF em memória
-            byte[] pdfBytes = gerarPdf();
+            byte[] pdfBytes = gerarPdf(context);
 
             // 2. Criar o objeto da mensagem de e-mail (MIME)
             Session session = Session.getDefaultInstance(new Properties());
@@ -94,7 +93,9 @@ public class GreetingLambda implements RequestHandler<FeedbackRequest, String> {
         }
     }
 
-    private byte[] gerarPdf() throws DocumentException {
+    private byte[] gerarPdf(Context context) throws DocumentException {
+
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         Document document = new Document(PageSize.A4.rotate());
         PdfWriter.getInstance(document, out);
@@ -117,7 +118,7 @@ public class GreetingLambda implements RequestHandler<FeedbackRequest, String> {
         addHeader(table, "Nome do Curso");
 
 
-        List<FeedbackDTO> data = repository.listLastFeedbacks();
+        List<FeedbackDTO> data = repository.listLastFeedbacks(context);
 
         data.forEach(f -> {
             table.addCell(f.getDescription());

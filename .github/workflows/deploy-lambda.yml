@@ -1,0 +1,64 @@
+name: Publica ou atualiza os lambdas na AWS usando os scripts
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'src/**'
+      - 'pom.xml'
+      - 'deploy-lambda.sh'
+      - 'custom-manage.sh'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  AWS_REGION: sa-east-1
+  FUNCTION_NAME: FeedbackIngressLambda
+  HANDLER: com.fiap.lambda.FeedbackIngressLambda::handleRequest
+  LAMBDA_ROLE_ARN: arn:aws:iam::992382492436:role/FeedbackHubLambdaExecutionRole
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Configure AWS creds (Secrets)
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build
+        run: mvn -B clean package -DskipTests
+
+      - name: Make scripts executable
+        run: chmod +x ./deploy-lambda.sh ./custom-manage.sh
+
+      - name: Create or Update via scripts
+        shell: bash
+        env:
+          AWS_REGION: ${{ env.AWS_REGION }}
+          FUNCTION_NAME: ${{ env.FUNCTION_NAME }}
+          HANDLER: ${{ env.HANDLER }}
+          LAMBDA_ROLE_ARN: ${{ env.LAMBDA_ROLE_ARN }}
+        run: |
+          set -e
+          if aws lambda get-function --function-name "$FUNCTION_NAME" --region "$AWS_REGION" >/dev/null 2>&1; then
+            cmd="update"
+            echo "Funcao ja existe... executando update!"
+          else
+            cmd="create"
+            echo "Funcao nao existe... executando create!"
+          fi
+          ./deploy-lambda.sh "$cmd"

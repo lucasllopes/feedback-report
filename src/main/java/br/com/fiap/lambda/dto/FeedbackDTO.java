@@ -3,12 +3,12 @@ package br.com.fiap.lambda.dto;
 public class FeedbackDTO {
 
     private String description;
-    private Integer rating;
+    private Long rating;
     private String studentName;
     private String teacherName;
     private String courseName;
 
-    public FeedbackDTO(String description, Integer rating, String studentName, String teacherName, String courseName) {
+    public FeedbackDTO(String description, Long rating, String studentName, String teacherName, String courseName) {
         this.description = description;
         this.rating = rating;
         this.studentName = studentName;
@@ -24,11 +24,11 @@ public class FeedbackDTO {
         this.studentName = studentName;
     }
 
-    public Integer getRating() {
+    public Long getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Long rating) {
         this.rating = rating;
     }
 

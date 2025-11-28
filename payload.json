@@ -1,26 +1,4 @@
 {
-  "email": "rodriguesqueirozcaike@gmail.com",
-  "subject": "Students Feedback Report",
-  "data": [
-    {
-      "name": "Student 1",
-      "feedback": "Horrible Class",
-      "rating": 7
-    },
-    {
-      "name": "Student 2",
-      "feedback": "Amazing Class",
-      "rating": 10
-    },
-    {
-      "name": "Student 3",
-      "feedback": "Class needs more examples",
-      "rating": 5
-    },
-    {
-      "name": "Student 4",
-      "feedback": "Class needs less duration",
-      "rating": 5
-    }
-  ]
+  "email": "jvoaht@gmail.com",
+  "subject": "Students Feedback Report"
 }
