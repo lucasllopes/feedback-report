@@ -125,6 +125,12 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
 
         document.newPage();
 
+        Font fontTituloDetalhes = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
+        Paragraph tituloDetalhes = new Paragraph("Métricas de Feedbacks", fontTituloDetalhes);
+        tituloDetalhes.setAlignment(Element.ALIGN_CENTER);
+        tituloDetalhes.setSpacingAfter(20);
+        document.add(tituloDetalhes);
+
         PdfPTable tableDetails = new PdfPTable(5);
         tableDetails.setWidthPercentage(100);
 
