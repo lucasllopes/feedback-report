@@ -87,7 +87,7 @@ public class FeedbackReportRepository {
         for (List<Field> row : resp.records()) {
             String courseName = row.get(0).stringValue();
             String teacherName = row.get(1).stringValue();
-            Double averageRating = row.get(2).doubleValue();
+            Double averageRating = Double.parseDouble(row.get(2).stringValue());
             Long countTotalRates = row.get(3).longValue();
             Long countTotalBadRates = row.get(4).longValue();
 

@@ -128,20 +128,20 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         PdfPTable tableDetails = new PdfPTable(5);
         tableDetails.setWidthPercentage(100);
 
-        addColoredCell(tableDetails, "Curso", Color.LIGHT_GRAY, true);
-        addColoredCell(tableDetails, "Nome do Professor", Color.LIGHT_GRAY, true);
-        addColoredCell(tableDetails, "Média das Avaliações", Color.LIGHT_GRAY, true);
-        addColoredCell(tableDetails, "Total de Avaliações", Color.LIGHT_GRAY, true);
-        addColoredCell(tableDetails, "Total de Avaliações(Ruins)", Color.LIGHT_GRAY, true);
+        addColoredCell(tableDetails, "Curso", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Nome do Professor", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Média das Avaliações", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Total de Avaliações", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Total de Avaliações(Ruins)", new Color(211, 211, 211), true);
 
         List<DetailsFeedbackDTO> dataDetails = repository.listDetailsFeedbacks(context);
 
         dataDetails.forEach(f -> {
-            addColoredCell(tableDetails, f.getCourseName(), Color.LIGHT_GRAY, false);
-            addColoredCell(tableDetails, f.getTeacherName(), Color.LIGHT_GRAY, false);
-            addColoredCell(tableDetails, String.valueOf(f.getAverageRating()),Color.LIGHT_GRAY, false);
-            addColoredCell(tableDetails, String.valueOf(f.getCountTotalRates()),Color.LIGHT_GRAY, false);
-            addColoredCell(tableDetails, String.valueOf(f.getCountTotalBadRates()),Color.LIGHT_GRAY, false);
+            addColoredCell(tableDetails, f.getCourseName(), new Color(211, 211, 211), false);
+            addColoredCell(tableDetails, f.getTeacherName(), new Color(211, 211, 211), false);
+            addColoredCell(tableDetails, String.valueOf(f.getAverageRating()), new Color(211, 211, 211), false);
+            addColoredCell(tableDetails, String.valueOf(f.getCountTotalRates()), new Color(211, 211, 211), false);
+            addColoredCell(tableDetails, String.valueOf(f.getCountTotalBadRates()), new Color(211, 211, 211), false);
         });
 
         document.add(tableDetails);
