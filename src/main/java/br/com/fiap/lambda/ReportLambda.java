@@ -3,14 +3,15 @@ package br.com.fiap.lambda;
 import br.com.fiap.lambda.dto.FeedbackDTO;
 import br.com.fiap.lambda.repository.FeedbackReportRepository;
 import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
+import com.lowagie.text.Font;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
+import jakarta.inject.Inject;
 import jakarta.mail.Message;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
@@ -23,8 +24,7 @@ import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.RawMessage;
 import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 
-import jakarta.inject.Inject;
-
+import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.util.List;
 import java.util.Properties;
@@ -43,10 +43,8 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
     public String handleRequest(FeedbackRequest input, Context context) {
 
         try {
-            // 1. Gerar o PDF em memória
             byte[] pdfBytes = gerarPdf(context);
 
-            // 2. Criar o objeto da mensagem de e-mail (MIME)
             Session session = Session.getDefaultInstance(new Properties());
             MimeMessage message = new MimeMessage(session);
 
@@ -54,29 +52,23 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
             message.setFrom(new InternetAddress(REMETENTE_FIXO));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(input.getEmail()));
 
-            // 3. Criar as partes do e-mail (Texto + Anexo)
             MimeMultipart multipart = new MimeMultipart();
 
-            // Parte A: O texto do corpo do e-mail
             MimeBodyPart textPart = new MimeBodyPart();
             textPart.setText("Olá, \n\nSegue em anexo o relatório consolidado de feedbacks dos alunos.\n\nAtenciosamente,\nLambda FIAP");
             multipart.addBodyPart(textPart);
 
-            // Parte B: O anexo PDF
             MimeBodyPart attachmentPart = new MimeBodyPart();
             DataSource source = new ByteArrayDataSource(pdfBytes, "application/pdf");
             attachmentPart.setDataHandler(new DataHandler(source));
             attachmentPart.setFileName("relatorio_feedbacks.pdf");
             multipart.addBodyPart(attachmentPart);
 
-            // Juntar tudo na mensagem
             message.setContent(multipart);
 
-            // 4. Converter a mensagem Java Mail para bytes que a AWS entende
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             message.writeTo(outputStream);
 
-            // 5. Enviar usando SendRawEmail
             SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
                     .rawMessage(RawMessage.builder()
                             .data(SdkBytes.fromByteArray(outputStream.toByteArray()))
@@ -111,21 +103,20 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100);
 
-        addHeader(table, "Comentário");
-        addHeader(table, "Nota");
-        addHeader(table, "Nome do Aluno");
-        addHeader(table, "Nome do Professor");
-        addHeader(table, "Nome do Curso");
-
+        addColoredCell(table, "Comentário", Color.WHITE, true);
+        addColoredCell(table, "Nota", Color.WHITE, true);
+        addColoredCell(table, "Nome do Aluno", Color.WHITE, true);
+        addColoredCell(table, "Nome do Professor", Color.WHITE, true);
+        addColoredCell(table, "Nome do Curso", Color.WHITE, true);
 
         List<FeedbackDTO> data = repository.listLastFeedbacks(context);
 
         data.forEach(f -> {
-            table.addCell(f.getDescription());
-            table.addCell(String.valueOf(f.getRating()));
-            table.addCell(f.getStudentName());
-            table.addCell(f.getTeacherName());
-            table.addCell(f.getCourseName());
+            addColoredCell(table, f.getDescription(), Color.WHITE, false);
+            addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, f.getStudentName(),Color.WHITE, false);
+            addColoredCell(table, f.getTeacherName(),Color.WHITE, false);
+            addColoredCell(table, f.getCourseName(),Color.WHITE, false);
         });
 
         document.add(table);
@@ -134,10 +125,22 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
         return out.toByteArray();
     }
 
-    private void addHeader(PdfPTable table, String text) {
-        PdfPCell header = new PdfPCell();
-        header.setPhrase(new Phrase(text, FontFactory.getFont(FontFactory.HELVETICA_BOLD)));
-        header.setHorizontalAlignment(Element.ALIGN_CENTER);
-        table.addCell(header);
+    private void addColoredCell(PdfPTable table, String text, Color bgColor, boolean isBold) {
+        Font font = isBold ?
+                FontFactory.getFont(FontFactory.HELVETICA_BOLD) :
+                FontFactory.getFont(FontFactory.HELVETICA);
+
+        PdfPCell cell = new PdfPCell(new Phrase(text, font));
+
+        cell.setPadding(5);
+
+        if (bgColor != null) {
+            cell.setBackgroundColor(bgColor);
+        }
+
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
+        table.addCell(cell);
     }
+
 }
