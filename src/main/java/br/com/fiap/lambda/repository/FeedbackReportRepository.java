@@ -72,7 +72,7 @@ public class FeedbackReportRepository {
                 "JOIN class cl ON c.id = cl.course_id " +
                 "JOIN teacher t ON t.id = cl.teacher_id " +
                 "JOIN feedback f ON f.class_id = cl.id " +
-                "GROUP BY c.name, t.name;";
+                "GROUP BY c.name, t.name";
 
 
         ExecuteStatementResponse resp = executeStatement(sql);
