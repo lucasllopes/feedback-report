@@ -11,7 +11,7 @@ cmd_create() {
     --handler "${HANDLER}" \
     --runtime "${RUNTIME}" \
     --role "${LAMBDA_ROLE_ARN}" \
-    --timeout 15 \
+    --timeout 35 \
     --memory-size 256 \
     --architectures "${ARCHITECTURE}"
 }
