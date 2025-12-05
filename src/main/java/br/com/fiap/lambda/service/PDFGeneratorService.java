@@ -34,7 +34,7 @@ public class PDFGeneratorService {
         titulo.setSpacingAfter(20);
         document.add(titulo);
 
-        PdfPTable table = new PdfPTable(6);
+        PdfPTable table = new PdfPTable(7);
         table.setWidthPercentage(100);
 
         addColoredCell(table, "Data", Color.WHITE, true);
@@ -53,6 +53,7 @@ public class PDFGeneratorService {
             addColoredCell(table, formattedDate, Color.WHITE, false);
             addColoredCell(table, f.getDescription(), Color.WHITE, false);
             addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
+            addColoredCell(table, defineUrgencia(f.getRating()), Color.WHITE, false);
             addColoredCell(table, f.getStudentName(),Color.WHITE, false);
             addColoredCell(table, f.getTeacherName(),Color.WHITE, false);
             addColoredCell(table, f.getCourseName(),Color.WHITE, false);
@@ -121,5 +122,12 @@ public class PDFGeneratorService {
         cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         table.addCell(cell);
+    }
+
+    private static String defineUrgencia(Long rating) {
+        if (rating <= 3) return "Crítica";
+        if (rating <= 5) return "Alta";
+        if (rating <= 7) return "Média";
+        return "Baixa";
     }
 }
