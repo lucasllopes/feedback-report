@@ -97,7 +97,7 @@ public class FeedbackReportRepository {
         for (List<Field> row : resp.records()) {
             String courseName = row.get(0).stringValue();
             String teacherName = row.get(1).stringValue();
-            String averageRating = String.format("%.2f",row.get(2).stringValue());
+            String averageRating = String.format("%.2f",row.get(2).doubleValue());
             String ratingDate = row.get(3).stringValue();
             Long totalRatesPerDay = row.get(4).longValue();
             Long totalCritical = row.get(5).longValue();
