@@ -4,7 +4,7 @@ package br.com.fiap.lambda.dto;
 public class DetailsFeedbackDTO {
     private String courseName;
     private String teacherName;
-    private Double average;
+    private String average;
     private String ratingDate;
     private Long totalRatesPerDay;
     private Long totalRatesPerCriticalUrgency;
@@ -12,7 +12,7 @@ public class DetailsFeedbackDTO {
     private Long totalRatesPerMediumUrgency;
     private Long totalRatesPerLowUrgency;
 
-    public DetailsFeedbackDTO(String courseName, String teacherName, Double average, String ratingDate, Long totalRatesPerDay, Long totalRatesPerCriticalUrgency, Long totalRatesPerHighUrgency, Long totalRatesPerMediumUrgency, Long totalRatesPerLowUrgency) {
+    public DetailsFeedbackDTO(String courseName, String teacherName, String average, String ratingDate, Long totalRatesPerDay, Long totalRatesPerCriticalUrgency, Long totalRatesPerHighUrgency, Long totalRatesPerMediumUrgency, Long totalRatesPerLowUrgency) {
         this.courseName = courseName;
         this.teacherName = teacherName;
         this.average = average;
@@ -40,11 +40,11 @@ public class DetailsFeedbackDTO {
         this.teacherName = teacherName;
     }
 
-    public Double getAverage() {
+    public String getAverage() {
         return average;
     }
 
-    public void setAverage(Double average) {
+    public void setAverage(String average) {
         this.average = average;
     }
 

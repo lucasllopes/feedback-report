@@ -40,6 +40,7 @@ public class PDFGeneratorService {
         addColoredCell(table, "Data", Color.WHITE, true);
         addColoredCell(table, "Comentário", Color.WHITE, true);
         addColoredCell(table, "Avaliação", Color.WHITE, true);
+        addColoredCell(table, "Urgência", Color.WHITE, true);
         addColoredCell(table, "Nome do Aluno", Color.WHITE, true);
         addColoredCell(table, "Nome do Professor", Color.WHITE, true);
         addColoredCell(table, "Nome do Curso", Color.WHITE, true);
@@ -49,7 +50,6 @@ public class PDFGeneratorService {
 
         data.forEach(f -> {
             String formattedDate = LocalDateTime.parse(f.getDate(), input).format(output);
-
             addColoredCell(table, formattedDate, Color.WHITE, false);
             addColoredCell(table, f.getDescription(), Color.WHITE, false);
             addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
@@ -81,12 +81,15 @@ public class PDFGeneratorService {
         addColoredCell(tableDetails, "Avaliações (Médias)", new Color(211, 211, 211), true);
         addColoredCell(tableDetails, "Avaliações (Baixas)", new Color(211, 211, 211), true);
 
+        DateTimeFormatter inputDetails = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        DateTimeFormatter outputDetails = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         dataDetails.forEach(f -> {
+            String formattedDate = LocalDateTime.parse(f.getRatingDate(), inputDetails).format(outputDetails);
             addColoredCell(tableDetails, f.getCourseName(), Color.WHITE, false);
             addColoredCell(tableDetails, f.getTeacherName(), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getAverage()), Color.WHITE, false);
-            addColoredCell(tableDetails, String.valueOf(f.getRatingDate()), Color.WHITE, false);
+            addColoredCell(tableDetails, formattedDate, Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerDay()), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerCriticalUrgency()), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerHighUrgency()), Color.WHITE, false);
