@@ -125,7 +125,7 @@ public class FeedbackReportRepository {
 
         LambdaLogger log = context.getLogger();
 
-        String sql = "SELECT a.email FROM admin a WHERE a.is_active = true";
+        String sql = "SELECT a.email FROM admin a WHERE a.active = true";
 
         //TODO: ver se os professores vao receber relatorios
         //SELECT * FROM teacher t WHERE t.active = true;

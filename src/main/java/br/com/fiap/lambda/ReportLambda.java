@@ -22,7 +22,7 @@ public class ReportLambda implements RequestHandler<Object, String> {
     FeedbackReportRepository repository;
 
     @Override
-    public String handleRequest(Object object, Context context) {
+    public String handleRequest(Object input, Context context) {
 
         try {
 
