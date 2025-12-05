@@ -37,13 +37,13 @@ public class PDFGeneratorService {
         PdfPTable table = new PdfPTable(7);
         table.setWidthPercentage(100);
 
-        addColoredCell(table, "Data", Color.WHITE, true);
-        addColoredCell(table, "Comentário", Color.WHITE, true);
-        addColoredCell(table, "Avaliação", Color.WHITE, true);
-        addColoredCell(table, "Urgência", Color.WHITE, true);
-        addColoredCell(table, "Nome do Aluno", Color.WHITE, true);
-        addColoredCell(table, "Nome do Professor", Color.WHITE, true);
-        addColoredCell(table, "Nome do Curso", Color.WHITE, true);
+        addColoredCell(table, "Data", new Color(211, 211, 211), true);
+        addColoredCell(table, "Comentário", new Color(211, 211, 211), true);
+        addColoredCell(table, "Avaliação", new Color(211, 211, 211), true);
+        addColoredCell(table, "Urgência", new Color(211, 211, 211), true);
+        addColoredCell(table, "Nome do Aluno", new Color(211, 211, 211), true);
+        addColoredCell(table, "Nome do Professor", new Color(211, 211, 211), true);
+        addColoredCell(table, "Nome do Curso", new Color(211, 211, 211), true);
 
         DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
         DateTimeFormatter output = DateTimeFormatter.ofPattern("dd/MM/yyyy");
