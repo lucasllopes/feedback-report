@@ -1,10 +1,12 @@
 package br.com.fiap.lambda.dto;
 
 
+import java.math.BigDecimal;
+
 public class DetailsFeedbackDTO {
     private String courseName;
     private String teacherName;
-    private String average;
+    private BigDecimal average;
     private String ratingDate;
     private Long totalRatesPerDay;
     private Long totalRatesPerCriticalUrgency;
@@ -12,7 +14,7 @@ public class DetailsFeedbackDTO {
     private Long totalRatesPerMediumUrgency;
     private Long totalRatesPerLowUrgency;
 
-    public DetailsFeedbackDTO(String courseName, String teacherName, String average, String ratingDate, Long totalRatesPerDay, Long totalRatesPerCriticalUrgency, Long totalRatesPerHighUrgency, Long totalRatesPerMediumUrgency, Long totalRatesPerLowUrgency) {
+    public DetailsFeedbackDTO(String courseName, String teacherName, BigDecimal average, String ratingDate, Long totalRatesPerDay, Long totalRatesPerCriticalUrgency, Long totalRatesPerHighUrgency, Long totalRatesPerMediumUrgency, Long totalRatesPerLowUrgency) {
         this.courseName = courseName;
         this.teacherName = teacherName;
         this.average = average;
@@ -40,11 +42,11 @@ public class DetailsFeedbackDTO {
         this.teacherName = teacherName;
     }
 
-    public String getAverage() {
+    public BigDecimal getAverage() {
         return average;
     }
 
-    public void setAverage(String average) {
+    public void setAverage(BigDecimal average) {
         this.average = average;
     }
 
