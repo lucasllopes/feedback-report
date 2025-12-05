@@ -12,6 +12,7 @@ import com.lowagie.text.pdf.PdfWriter;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -43,11 +44,11 @@ public class PDFGeneratorService {
         addColoredCell(table, "Nome do Professor", Color.WHITE, true);
         addColoredCell(table, "Nome do Curso", Color.WHITE, true);
 
-        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        DateTimeFormatter input = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
         DateTimeFormatter output = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         data.forEach(f -> {
-            String formattedDate = LocalDate.parse(f.getDate(), input).format(output);
+            String formattedDate = LocalDateTime.parse(f.getDate(), input).format(output);
 
             addColoredCell(table, formattedDate, Color.WHITE, false);
             addColoredCell(table, f.getDescription(), Color.WHITE, false);
