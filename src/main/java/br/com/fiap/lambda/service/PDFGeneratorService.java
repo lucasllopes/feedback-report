@@ -31,9 +31,10 @@ public class PDFGeneratorService {
         titulo.setSpacingAfter(20);
         document.add(titulo);
 
-        PdfPTable table = new PdfPTable(5);
+        PdfPTable table = new PdfPTable(6);
         table.setWidthPercentage(100);
 
+        addColoredCell(table, "Data", Color.WHITE, true);
         addColoredCell(table, "Comentário", Color.WHITE, true);
         addColoredCell(table, "Avaliação", Color.WHITE, true);
         addColoredCell(table, "Nome do Aluno", Color.WHITE, true);
@@ -41,6 +42,7 @@ public class PDFGeneratorService {
         addColoredCell(table, "Nome do Curso", Color.WHITE, true);
 
         data.forEach(f -> {
+            addColoredCell(table, f.getDate(), Color.WHITE, false);
             addColoredCell(table, f.getDescription(), Color.WHITE, false);
             addColoredCell(table, String.valueOf(f.getRating()), f.getRating() <= 5 ? new Color(255, 107, 107) : Color.WHITE, false);
             addColoredCell(table, f.getStudentName(),Color.WHITE, false);
@@ -58,21 +60,30 @@ public class PDFGeneratorService {
         tituloDetalhes.setSpacingAfter(20);
         document.add(tituloDetalhes);
 
-        PdfPTable tableDetails = new PdfPTable(5);
+        PdfPTable tableDetails = new PdfPTable(9);
         tableDetails.setWidthPercentage(100);
 
         addColoredCell(tableDetails, "Curso", new Color(211, 211, 211), true);
-        addColoredCell(tableDetails, "Nome do Professor", new Color(211, 211, 211), true);
-        addColoredCell(tableDetails, "Média das Avaliações", new Color(211, 211, 211), true);
-        addColoredCell(tableDetails, "Total de Avaliações", new Color(211, 211, 211), true);
-        addColoredCell(tableDetails, "Total de Avaliações(Ruins)", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Professor", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Média", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Data", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Avaliações Por Dia", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Avaliações (Críticas)", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Avaliações (Altas)", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Avaliações (Médias)", new Color(211, 211, 211), true);
+        addColoredCell(tableDetails, "Avaliações (Baixas)", new Color(211, 211, 211), true);
+
 
         dataDetails.forEach(f -> {
             addColoredCell(tableDetails, f.getCourseName(), Color.WHITE, false);
             addColoredCell(tableDetails, f.getTeacherName(), Color.WHITE, false);
-            addColoredCell(tableDetails, String.valueOf(f.getAverageRating()), Color.WHITE, false);
-            addColoredCell(tableDetails, String.valueOf(f.getCountTotalRates()), Color.WHITE, false);
-            addColoredCell(tableDetails, String.valueOf(f.getCountTotalBadRates()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getAverage()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getRatingDate()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerDay()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerCriticalUrgency()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerHighUrgency()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerMediumUrgency()), Color.WHITE, false);
+            addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerLowUrgency()), Color.WHITE, false);
         });
 
         document.add(tableDetails);

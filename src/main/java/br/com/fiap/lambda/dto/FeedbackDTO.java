@@ -7,21 +7,23 @@ public class FeedbackDTO {
     private String studentName;
     private String teacherName;
     private String courseName;
+    private String date;
 
-    public FeedbackDTO(String description, Long rating, String studentName, String teacherName, String courseName) {
+    public FeedbackDTO(String description, Long rating, String studentName, String teacherName, String courseName, String date) {
         this.description = description;
         this.rating = rating;
         this.studentName = studentName;
         this.teacherName = teacherName;
         this.courseName = courseName;
+        this.date = date;
     }
 
-    public String getStudentName() {
-        return studentName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Long getRating() {
@@ -32,12 +34,12 @@ public class FeedbackDTO {
         this.rating = rating;
     }
 
-    public String getDescription() {
-        return description;
+    public String getStudentName() {
+        return studentName;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public String getTeacherName() {
@@ -54,5 +56,13 @@ public class FeedbackDTO {
 
     public void setCourseName(String courseName) {
         this.courseName = courseName;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

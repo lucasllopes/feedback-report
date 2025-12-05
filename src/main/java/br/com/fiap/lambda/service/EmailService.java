@@ -21,7 +21,10 @@ import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Properties;
 
 @ApplicationScoped
@@ -33,47 +36,58 @@ public class EmailService {
     @ConfigProperty(name = "aws.ses.sender")
     private String REMETENTE;
 
-    public void sendEmailWithAttachment(Context context, String receiver, String subject, String body, byte[] pdfBytes, String fileName) {
+    public void sendEmailWithAttachment(Context context, List<String> receivers, String body, byte[] pdfBytes, String fileName) {
 
-        try {
+        DataSource source = new ByteArrayDataSource(pdfBytes, "application/pdf");
+        String subject = "Relatório de Feedbacks | " +
+                LocalDate.now().minusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                " - " +
+                LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-            context.getLogger().log("Iniciando envio de email para " + receiver + "...");
+        receivers.forEach(receiver -> {
 
-            Session session = Session.getDefaultInstance(new Properties());
-            MimeMessage message = new MimeMessage(session);
+            try {
 
-            message.setSubject(subject);
-            message.setFrom(new InternetAddress(REMETENTE));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiver));
+                context.getLogger().log("Iniciando envio de email para " + receivers + "...");
 
-            MimeMultipart multipart = new MimeMultipart();
+                Session session = Session.getDefaultInstance(new Properties());
+                MimeMessage message = new MimeMessage(session);
 
-            MimeBodyPart textPart = new MimeBodyPart();
-            textPart.setText(body);
-            multipart.addBodyPart(textPart);
+                message.setSubject(subject);
+                message.setFrom(new InternetAddress(REMETENTE));
+                message.setRecipients(Message.RecipientType.TO, receiver);
 
-            MimeBodyPart attachmentPart = new MimeBodyPart();
-            DataSource source = new ByteArrayDataSource(pdfBytes, "application/pdf");
-            attachmentPart.setDataHandler(new DataHandler(source));
-            attachmentPart.setFileName(fileName);
-            multipart.addBodyPart(attachmentPart);
+                MimeMultipart multipart = new MimeMultipart();
 
-            message.setContent(multipart);
+                MimeBodyPart textPart = new MimeBodyPart();
+                textPart.setText(body);
+                multipart.addBodyPart(textPart);
 
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            message.writeTo(outputStream);
+                MimeBodyPart attachmentPart = new MimeBodyPart();
 
-            SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
-                    .rawMessage(RawMessage.builder()
-                            .data(SdkBytes.fromByteArray(outputStream.toByteArray()))
-                            .build())
-                    .build();
+                attachmentPart.setDataHandler(new DataHandler(source));
+                attachmentPart.setFileName(fileName);
+                multipart.addBodyPart(attachmentPart);
 
-            sesClient.sendRawEmail(rawEmailRequest);
+                message.setContent(multipart);
 
-            context.getLogger().log("Email enviado de " + REMETENTE + " para " + receiver + " com sucesso em " + LocalDateTime.now());
-        } catch (MessagingException | IOException e) {
-            throw new RuntimeException("Erro ao construir ou enviar email: " + e.getMessage(), e);
-        }
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                message.writeTo(outputStream);
+
+                SendRawEmailRequest rawEmailRequest = SendRawEmailRequest.builder()
+                        .rawMessage(RawMessage.builder()
+                                .data(SdkBytes.fromByteArray(outputStream.toByteArray()))
+                                .build())
+                        .build();
+
+                sesClient.sendRawEmail(rawEmailRequest);
+
+                context.getLogger().log("Email enviado de " + REMETENTE + " para " + receiver + " com sucesso em " + LocalDateTime.now());
+
+            } catch (MessagingException | IOException e) {
+                throw new RuntimeException("Erro ao construir ou enviar email: " + e.getMessage(), e);
+            }
+
+        });
     }
 }

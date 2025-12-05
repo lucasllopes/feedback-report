@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
+public class ReportLambda implements RequestHandler<Object, String> {
 
     @Inject
     EmailService emailService;
@@ -22,7 +22,7 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
     FeedbackReportRepository repository;
 
     @Override
-    public String handleRequest(FeedbackRequest input, Context context) {
+    public String handleRequest(Object object, Context context) {
 
         try {
 
@@ -30,6 +30,7 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
 
             List<FeedbackDTO> data = repository.listLastFeedbacks(context);
             List<DetailsFeedbackDTO> dataDetails = repository.listDetailsFeedbacks(context);
+            List<String> adminsEmails = repository.listActivesAdmins(context);
 
             byte[] pdfBytes = PDFGeneratorService.gerarPdf(context, data, dataDetails);
 
@@ -43,8 +44,7 @@ public class ReportLambda implements RequestHandler<FeedbackRequest, String> {
 
             emailService.sendEmailWithAttachment(
                     context,
-                    input.getEmail(),
-                    input.getSubject(),
+                    adminsEmails,
                     emailBody,
                     pdfBytes,
                     fileName
