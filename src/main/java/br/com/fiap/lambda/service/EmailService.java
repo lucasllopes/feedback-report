@@ -4,7 +4,6 @@ import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.mail.Message;
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.internet.InternetAddress;
@@ -16,8 +15,8 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import com.amazonaws.services.lambda.runtime.Context;
 import software.amazon.awssdk.core.SdkBytes;
 import software.amazon.awssdk.services.ses.SesClient;
-import software.amazon.awssdk.services.ses.model.RawMessage;
-import software.amazon.awssdk.services.ses.model.SendRawEmailRequest;
+import software.amazon.awssdk.services.ses.model.*;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -55,7 +54,7 @@ public class EmailService {
 
                 message.setSubject(subject);
                 message.setFrom(new InternetAddress(REMETENTE));
-                message.setRecipients(Message.RecipientType.TO, receiver);
+                message.setRecipients(jakarta.mail.Message.RecipientType.TO, receiver);
 
                 MimeMultipart multipart = new MimeMultipart();
 
@@ -90,4 +89,34 @@ public class EmailService {
 
         });
     }
+
+        public void sendSimpleEmail(Context context, List<String> receivers, String body) {
+
+            String subject = "Relatório de Feedbacks | " +
+                    LocalDate.now().minusDays(7).format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                    " - " +
+                    LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+            for (String receiver : receivers) {
+                SendEmailRequest request = SendEmailRequest.builder()
+                        .source(REMETENTE)
+                        .destination(Destination.builder()
+                                .toAddresses(receiver)
+                                .build())
+                        .message(Message.builder()
+                                .subject(Content.builder().data(subject).build())
+                                .body(Body.builder()
+                                        .text(Content.builder().data(body).build())
+                                        .build())
+                                .build())
+                        .build();
+
+                sesClient.sendEmail(request);
+            }
+
+            context.getLogger().log("Envio de emails simples finalizado.");
+        }
+
 }
+
+

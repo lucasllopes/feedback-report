@@ -4,15 +4,13 @@ public class FeedbackDTO {
 
     private String description;
     private Long rating;
-    private String studentName;
     private String teacherName;
     private String courseName;
     private String date;
 
-    public FeedbackDTO(String description, Long rating, String studentName, String teacherName, String courseName, String date) {
+    public FeedbackDTO(String description, Long rating, String teacherName, String courseName, String date) {
         this.description = description;
         this.rating = rating;
-        this.studentName = studentName;
         this.teacherName = teacherName;
         this.courseName = courseName;
         this.date = date;
@@ -32,14 +30,6 @@ public class FeedbackDTO {
 
     public void setRating(Long rating) {
         this.rating = rating;
-    }
-
-    public String getStudentName() {
-        return studentName;
-    }
-
-    public void setStudentName(String studentName) {
-        this.studentName = studentName;
     }
 
     public String getTeacherName() {

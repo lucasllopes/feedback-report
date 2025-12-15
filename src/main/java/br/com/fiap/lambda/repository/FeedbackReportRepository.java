@@ -37,13 +37,13 @@ public class FeedbackReportRepository {
 
         LambdaLogger log = context.getLogger();
 
-        String sql = "SELECT f.description, f.rating, s.name , t.name, c.name, f.created_at FROM feedback f " +
-        "INNER JOIN class cl ON cl.id = f.class_id " +
-        "INNER JOIN teacher t ON t.id = cl.teacher_id " +
-        "INNER JOIN course c ON c.id = cl.course_id " +
-        "INNER JOIN student s ON s.id = f.student_id " +
-        "WHERE f.created_at >= NOW() - INTERVAL '7 days' " +
-        "ORDER BY f.created_at DESC";
+        String sql = "SELECT f.description, f.rating, t.name, c.name, f.created_at FROM feedback f " +
+                "INNER JOIN class cl ON cl.id = f.class_id " +
+                "INNER JOIN teacher t ON t.id = cl.teacher_id " +
+                "INNER JOIN course c ON c.id = cl.course_id " +
+                "INNER JOIN student s ON s.id = f.student_id " +
+                "WHERE f.created_at >= NOW() - INTERVAL '7 days' " +
+                "ORDER BY f.created_at DESC";
 
         ExecuteStatementResponse resp = executeStatement(sql);
 
@@ -53,14 +53,15 @@ public class FeedbackReportRepository {
 
         List<FeedbackDTO> result = new ArrayList<>();
 
-        for (List<Field> row : resp.records()) {
-            String description = row.get(0).stringValue();
-            Long rating = row.get(1).longValue();
-            String studentName = row.get(2).stringValue();
-            String teacherName = row.get(3).stringValue();
-            String courseName = row.get(4).stringValue();
-            String date = row.get(5).stringValue();
-            result.add(new FeedbackDTO(description, rating, studentName, teacherName, courseName, date));
+        if (!resp.records().isEmpty()) {
+            for (List<Field> row : resp.records()) {
+                String description = row.get(0).stringValue();
+                Long rating = row.get(1).longValue();
+                String teacherName = row.get(2).stringValue();
+                String courseName = row.get(3).stringValue();
+                String date = row.get(3).stringValue();
+                result.add(new FeedbackDTO(description, rating, teacherName, courseName, date));
+            }
         }
 
         return result;
@@ -84,6 +85,7 @@ public class FeedbackReportRepository {
                 "JOIN class cl ON c.id = cl.course_id  " +
                 "JOIN teacher t ON t.id = cl.teacher_id  " +
                 "JOIN feedback f ON f.class_id = cl.id  " +
+                "WHERE f.created_at >= NOW() - INTERVAL '7 days' " +
                 "GROUP BY c.name, " +
                 "t.name, " +
                 "f.created_at";
@@ -96,28 +98,30 @@ public class FeedbackReportRepository {
 
         List<DetailsFeedbackDTO> result = new ArrayList<>();
 
-        for (List<Field> row : resp.records()) {
-            String courseName = row.get(0).stringValue();
-            String teacherName = row.get(1).stringValue();
-            BigDecimal averageRating = new BigDecimal(row.get(2).stringValue()).setScale(2, RoundingMode.DOWN);
-            String ratingDate = row.get(3).stringValue();
-            Long totalRatesPerDay = row.get(4).longValue();
-            Long totalCritical = row.get(5).longValue();
-            Long totalHigh = row.get(6).longValue();
-            Long totalMedium = row.get(7).longValue();
-            Long totalLow = row.get(8).longValue();
+        if (!resp.records().isEmpty()) {
+            for (List<Field> row : resp.records()) {
+                String courseName = row.get(0).stringValue();
+                String teacherName = row.get(1).stringValue();
+                BigDecimal averageRating = new BigDecimal(row.get(2).stringValue()).setScale(2, RoundingMode.DOWN);
+                String ratingDate = row.get(3).stringValue();
+                Long totalRatesPerDay = row.get(4).longValue();
+                Long totalCritical = row.get(5).longValue();
+                Long totalHigh = row.get(6).longValue();
+                Long totalMedium = row.get(7).longValue();
+                Long totalLow = row.get(8).longValue();
 
-            result.add(new DetailsFeedbackDTO(
-                    courseName,
-                    teacherName,
-                    averageRating,
-                    ratingDate,
-                    totalRatesPerDay,
-                    totalCritical,
-                    totalHigh,
-                    totalMedium,
-                    totalLow
-            ));
+                result.add(new DetailsFeedbackDTO(
+                        courseName,
+                        teacherName,
+                        averageRating,
+                        ratingDate,
+                        totalRatesPerDay,
+                        totalCritical,
+                        totalHigh,
+                        totalMedium,
+                        totalLow
+                ));
+            }
         }
 
         return result;
@@ -129,9 +133,6 @@ public class FeedbackReportRepository {
 
         String sql = "SELECT a.email FROM admin a WHERE a.active = true";
 
-        //TODO: ver se os professores vao receber relatorios
-        //SELECT * FROM teacher t WHERE t.active = true;
-
         ExecuteStatementResponse resp = executeStatement(sql);
 
         log.log("INFO: Dados: " + resp.toString());
@@ -139,16 +140,18 @@ public class FeedbackReportRepository {
 
         List<String> result = new ArrayList<>();
 
-        for (List<Field> row : resp.records()) {
-            String email = row.get(0).stringValue();
-            result.add(email);
+        if (!resp.records().isEmpty()) {
+            for (List<Field> row : resp.records()) {
+                String email = row.get(0).stringValue();
+                result.add(email);
+            }
         }
 
         return result;
     }
 
 
-    private ExecuteStatementResponse executeStatement(String sql){
+    private ExecuteStatementResponse executeStatement(String sql) {
         ExecuteStatementRequest request = ExecuteStatementRequest.builder()
                 .resourceArn(clusterArn)
                 .secretArn(secretArn)

@@ -32,23 +32,42 @@ public class ReportLambda implements RequestHandler<Object, String> {
             List<DetailsFeedbackDTO> dataDetails = repository.listDetailsFeedbacks(context);
             List<String> adminsEmails = repository.listActivesAdmins(context);
 
-            byte[] pdfBytes = PDFGeneratorService.gerarPdf(context, data, dataDetails);
+            if((data != null && !data.isEmpty()) && (dataDetails != null && !dataDetails.isEmpty())){
+                byte[] pdfBytes = PDFGeneratorService.gerarPdf(context, data, dataDetails);
 
-            String fileName = "relatorio_feedbacks_" +
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm")) + ".pdf";
+                String fileName = "relatorio_feedbacks_" +
+                        LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmm")) + ".pdf";
 
-            String emailBody = "Olá, " +
-                    "\n\nSegue em anexo o relatório consolidado de feedbacks dos alunos." +
-                    "\n\nAtenciosamente," +
-                    "\nFeedback Hub";
+                String emailBody = "Olá, " +
+                        "\n\nSegue em anexo o relatório consolidado de feedbacks dos alunos." +
+                        "\n\nAtenciosamente," +
+                        "\nFeedback Hub";
 
-            emailService.sendEmailWithAttachment(
-                    context,
-                    adminsEmails,
-                    emailBody,
-                    pdfBytes,
-                    fileName
-            );
+                emailService.sendEmailWithAttachment(
+                        context,
+                        adminsEmails,
+                        emailBody,
+                        pdfBytes,
+                        fileName
+                );
+
+            }else {
+
+                String emailBody = "Olá, " +
+                        "\n\nSegue em anexo o relatório consolidado de feedbacks dos alunos." +
+                        "\n\nAtenciosamente," +
+                        "\nFeedback Hub";
+
+                emailService.sendSimpleEmail(
+                        context,
+                        adminsEmails,
+
+                        emailBody
+                );
+            }
+
+
+
 
             return "Processamento concluído com sucesso.";
         } catch (Exception e) {
