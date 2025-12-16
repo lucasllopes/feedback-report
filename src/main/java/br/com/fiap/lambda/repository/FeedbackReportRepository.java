@@ -41,7 +41,6 @@ public class FeedbackReportRepository {
                 "INNER JOIN class cl ON cl.id = f.class_id " +
                 "INNER JOIN teacher t ON t.id = cl.teacher_id " +
                 "INNER JOIN course c ON c.id = cl.course_id " +
-                "INNER JOIN student s ON s.id = f.student_id " +
                 "WHERE f.created_at >= NOW() - INTERVAL '7 days' " +
                 "ORDER BY f.created_at DESC";
 
