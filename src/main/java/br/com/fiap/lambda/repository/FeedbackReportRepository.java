@@ -58,7 +58,7 @@ public class FeedbackReportRepository {
                 Long rating = row.get(1).longValue();
                 String teacherName = row.get(2).stringValue();
                 String courseName = row.get(3).stringValue();
-                String date = row.get(3).stringValue();
+                String date = row.get(4).stringValue();
                 result.add(new FeedbackDTO(description, rating, teacherName, courseName, date));
             }
         }

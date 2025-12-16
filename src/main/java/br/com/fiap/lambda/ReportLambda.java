@@ -52,7 +52,6 @@ public class ReportLambda implements RequestHandler<Object, String> {
                 );
 
             }else {
-
                 String emailBody = "Olá, " +
                         "\n\nSegue em anexo o relatório consolidado de feedbacks dos alunos." +
                         "\n\nAtenciosamente," +
@@ -61,7 +60,6 @@ public class ReportLambda implements RequestHandler<Object, String> {
                 emailService.sendSimpleEmail(
                         context,
                         adminsEmails,
-
                         emailBody
                 );
             }
