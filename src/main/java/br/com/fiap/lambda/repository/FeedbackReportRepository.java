@@ -90,7 +90,6 @@ public class FeedbackReportRepository {
                 "t.name, " +
                 "f.created_at";
 
-
         ExecuteStatementResponse resp = executeStatement(sql);
 
         log.log("INFO: Dados: " + resp.toString());
