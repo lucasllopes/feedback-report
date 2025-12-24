@@ -74,7 +74,7 @@ public class FeedbackReportRepository {
         String sql = "SELECT c.name, " +
                 "t.name, " +
                 "AVG(f.rating) AS AVERAGE, " +
-                "DATE(f.created_at) , " +
+                "DATE(f.created_at), " +
                 "COUNT(f.id) AS TOTAL_RATES_PER_DAY, " +
                 "SUM(CASE WHEN f.rating <= 3 THEN 1 ELSE 0 END) AS TOTAL_RATES_PER_CRITICAL_URGENCY, " +
                 "SUM(CASE WHEN f.rating > 3 AND f.rating <= 5 THEN 1 ELSE 0 END) AS TOTAL_RATES_PER_HIGH_URGENCY, " +

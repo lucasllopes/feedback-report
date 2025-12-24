@@ -84,7 +84,7 @@ public class PDFGeneratorService {
         DateTimeFormatter outputDetails = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         dataDetails.forEach(f -> {
-            String formattedDate = LocalDateTime.parse(f.getRatingDate(), inputDetails).format(outputDetails);
+            String formattedDate = LocalDate.parse(f.getRatingDate(), inputDetails).format(outputDetails);
             addColoredCell(tableDetails, f.getCourseName(), Color.WHITE, false);
             addColoredCell(tableDetails, f.getTeacherName(), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getAverage()), Color.WHITE, false);
