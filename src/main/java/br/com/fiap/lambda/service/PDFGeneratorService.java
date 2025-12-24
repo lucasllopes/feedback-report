@@ -82,13 +82,11 @@ public class PDFGeneratorService {
         addColoredCell(tableDetails, "Avaliações (Médias)", new Color(211, 211, 211), true);
         addColoredCell(tableDetails, "Avaliações (Baixas)", new Color(211, 211, 211), true);
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         dataDetails.forEach(f -> {
-            String formattedDate = formatter.format(f.getRatingDate());
             addColoredCell(tableDetails, f.getCourseName(), Color.WHITE, false);
             addColoredCell(tableDetails, f.getTeacherName(), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getAverage()), Color.WHITE, false);
-            addColoredCell(tableDetails, formattedDate, Color.WHITE, false);
+            addColoredCell(tableDetails, f.getRatingDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerDay()), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerCriticalUrgency()), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getTotalRatesPerHighUrgency()), Color.WHITE, false);

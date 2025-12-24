@@ -14,6 +14,7 @@ import software.amazon.awssdk.services.rdsdata.model.Field;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,7 +102,8 @@ public class FeedbackReportRepository {
                 String courseName = row.get(0).stringValue();
                 String teacherName = row.get(1).stringValue();
                 BigDecimal averageRating = new BigDecimal(row.get(2).stringValue()).setScale(2, RoundingMode.DOWN);
-                String ratingDate = row.get(3).stringValue();
+                LocalDate ratingDate = LocalDate.parse(row.get(3).stringValue());
+                log.log("INFO: RATE DATE: " + row.get(3).stringValue());
                 Long totalRatesPerDay = row.get(4).longValue();
                 Long totalCritical = row.get(5).longValue();
                 Long totalHigh = row.get(6).longValue();
