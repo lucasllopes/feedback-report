@@ -87,7 +87,7 @@ public class FeedbackReportRepository {
                 "WHERE f.created_at >= NOW() - INTERVAL '7 days' " +
                 "GROUP BY c.name, " +
                 "t.name, " +
-                "f.created_at";
+                "DATE(f.created_at)";
 
         ExecuteStatementResponse resp = executeStatement(sql);
 
