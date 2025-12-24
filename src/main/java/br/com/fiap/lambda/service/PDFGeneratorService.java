@@ -9,8 +9,10 @@ import com.lowagie.text.pdf.PdfPCell;
 import com.lowagie.text.pdf.PdfPTable;
 import com.lowagie.text.pdf.PdfWriter;
 
+import javax.swing.text.DateFormatter;
 import java.awt.*;
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -80,11 +82,9 @@ public class PDFGeneratorService {
         addColoredCell(tableDetails, "Avaliações (Médias)", new Color(211, 211, 211), true);
         addColoredCell(tableDetails, "Avaliações (Baixas)", new Color(211, 211, 211), true);
 
-        DateTimeFormatter inputDetails = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
-        DateTimeFormatter outputDetails = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         dataDetails.forEach(f -> {
-            String formattedDate = LocalDate.parse(f.getRatingDate(), inputDetails).format(outputDetails);
+            String formattedDate = formatter.format(f.getRatingDate());
             addColoredCell(tableDetails, f.getCourseName(), Color.WHITE, false);
             addColoredCell(tableDetails, f.getTeacherName(), Color.WHITE, false);
             addColoredCell(tableDetails, String.valueOf(f.getAverage()), Color.WHITE, false);
